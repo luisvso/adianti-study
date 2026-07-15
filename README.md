@@ -43,7 +43,7 @@ ddev start && xdebug on
 ### To create the databases you need :
 
 ```
-ddev psql -c "CREATE TABLE your_database;"
+ddev psql -c "CREATE DATABASE your_database;"
 
 ```
 
