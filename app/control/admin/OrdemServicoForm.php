@@ -161,13 +161,13 @@ class OrdemServicoForm extends TPage
         $panel->getBody()->style = 'overflow-x:auto';
         $this->form->addContent( [$panel] );
 
-        // $format_value = function($value)
-        // {
-        //     if(is_numeric($value))
-        //     {
-        //         return number_format($value, 2, ",", ".");
-        //     }
-        // };
+        $format_value = function($value)
+        {
+            if(is_numeric($value))
+            {
+                return number_format($value, 2, ",", ".");
+            }
+        };
 
         $col_vl_unitario->setTransformer($format_value);
         $col_totalitem->setTransformer($format_value);
@@ -279,6 +279,12 @@ class OrdemServicoForm extends TPage
 
     public function onDeletePeca()
     {
+
+    }
+
+    public function calcularVlCustoTotal()
+    {
+
     }
 
 }
