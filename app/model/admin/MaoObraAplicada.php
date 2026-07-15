@@ -13,6 +13,7 @@ class MaoObraAplicada extends TRecord
 
         parent::__construct($id_mao_obra_aplicada, true);
         parent::addAttribute("nm_peca");
+        parent::addAttribute("vl_unitario");
         parent::addAttribute("id_ordemservico");
         parent::addAttribute("qt_utilizada");
         parent::addAttribute("vl_totalitem");

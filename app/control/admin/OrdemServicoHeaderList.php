@@ -49,12 +49,13 @@ class OrdemServicoHeaderList extends TPage
 
         // FINAL HEADER
 
-        // COLUNAS -> adicionado label, 
+        // COLUNAS -> adicionado label
         $col_nu_ordemservico = new TDataGridColumn('nu_ordemservico', "N Ordem Serviço", "center", 50);
         $col_nm_patrimonio = new TDataGridColumn('nm_patrimonio', "Nome Patrimônio", "center", 50);
         $col_dt_abertura = new TDataGridColumn("dt_abertura", "Data de Abertura", "center", 50);
         $col_dt_conclusao = new TDataGridColumn("dt_conclusao", "Data de Conclusão", "center", 50);
-        $col_tp_defeito = new TDataGridColumn("tp_defeito", "Defeito", "center", 50);
+        $col_ds_defeito = new TDataGridColumn("ds_defeito", "Defeito", "center", 50);
+        $col_tp_situacao = new TDataGridColumn("tp_situacao", "Situação", "center", 50);
         $col_vl_custototal = new TDataGridColumn("vl_custototal", "Custo Total", "right", 50);
 
         // Colunas Adicionadas
@@ -62,7 +63,8 @@ class OrdemServicoHeaderList extends TPage
         $this->datagrid->addColumn($col_nm_patrimonio);
         $this->datagrid->addColumn($col_dt_abertura);
         $this->datagrid->addColumn($col_dt_conclusao);
-        $this->datagrid->addColumn($col_tp_defeito);
+        $this->datagrid->addColumn($col_ds_defeito);
+        $this->datagrid->addColumn($col_tp_situacao);
         $this->datagrid->addColumn($col_vl_custototal);
 
         // $this->form->addHeaderAction("New", new TAction([OrdemServicoForm, "onShow"], ["register_state" => "false"]), "fa:plus green");

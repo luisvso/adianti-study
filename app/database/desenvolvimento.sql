@@ -27,6 +27,7 @@ create table if not exists ordem_servico(
 create table if not exists mao_obra_aplicada(
 	id_maoobraaplicada BIGSERIAL, 
 	nm_peca BIGINT, 
+	vl_unitario NUMERIC(18,2),
 	id_ordemservico BIGINT,
 	qt_utilizada INTEGER, 
 	vl_totalitem NUMERIC(18,2),
@@ -80,3 +81,28 @@ INSERT INTO ordem_servico (
     4,
     0.00
 );
+
+create table if not exists peca(
+	id_peca BIGSERIAL, 
+	cd_peca VARCHAR(100) UNIQUE, 
+	nm_peca VARCHAR(100), 
+	vl_unitario NUMERIC(18,2),
+	primary key(id_peca)
+);
+
+INSERT INTO peca (cd_peca, nm_peca, vl_unitario) VALUES
+('PEC-2026-0001', 'Fonte de Alimentação ATX 650W',     320.00),
+('PEC-2026-0002', 'Memória RAM DDR4 8GB',               180.00),
+('PEC-2026-0003', 'SSD NVMe 480GB',                     350.00),
+('PEC-2026-0004', 'Placa-mãe ATX',                      650.00),
+('PEC-2026-0005', 'Bateria de No-break 12V 7Ah',        145.00),
+('PEC-2026-0006', 'Toner Original HP 85A',              280.00),
+('PEC-2026-0007', 'Cooler Fan 120mm',                    65.00),
+('PEC-2026-0008', 'Cabo de Rede Cat6 (rolo 100m)',      210.00),
+('PEC-2026-0009', 'Compressor de Ar Condicionado',     1850.00),
+('PEC-2026-0010', 'Filtro de Ar Condicionado',           90.00),
+('PEC-2026-0011', 'Rodízio para Cadeira (jogo)',          45.00),
+('PEC-2026-0012', 'Gás Refrigerante R410A (kg)',        180.00),
+('PEC-2026-0013', 'Disjuntor Termomagnético 20A',        75.00),
+('PEC-2026-0014', 'Lâmpada de Projetor Epson',          420.00),
+('PEC-2026-0015', 'Vela de Ignição para Gerador',        38.00);
