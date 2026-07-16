@@ -314,12 +314,12 @@ class OrdemServicoForm extends TPage
         TDataGrid::removeRowById("pecas_lista", $param["uniqid"]);
 
 
-        self::calcularVlCustoTotal([], $param["method"]);
+        // self::calcularVlCustoTotal([], $param["method"]);
 
         // calcularVlCustoTotal( (array) $formOs, $param["method"]);
     }
 
-    public static function calcularVlCustoTotal(array $data, string $method)
+    public function calcularVlCustoTotal(array $data, string $method)
     {
         $vlTotalItemSomar = $data["vl_totalitem"];
 
@@ -331,8 +331,7 @@ class OrdemServicoForm extends TPage
             }
         };
 
-        // $formOs = $this->form->getData();
-        $formOs = "21";
+        $formOs = $this->form->getData();
 
         $custoTotal = (int) $formOs->vl_custototal;
 
@@ -344,6 +343,11 @@ class OrdemServicoForm extends TPage
         if (preg_match("/^(\w+)*(add)(\w+)*$/", $method))
         {
             $custoTotal += $vlTotalItemSomar;
+        }
+
+        if (preg_match("/^(\w+)*(edit)(\w+)*$/", $method))
+        {
+            // $custoTotal += $vlTotalItemSomar;
         }
 
         Tform::sendData($this->formName, ["vl_custototal" => $format_value($custoTotal)], FALSE, FALSE);
