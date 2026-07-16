@@ -87,7 +87,7 @@ class OrdemServicoHeaderList extends TPage
 
     public function onReload($param = null)
     {
-        
+
         TTransaction::open("desenvolvimento");
         $repositorio = new TRepository(OrdemServico::class);
         $limit = 2;
@@ -121,7 +121,6 @@ class OrdemServicoHeaderList extends TPage
 
         TTransaction::close();
         $this->loaded = true;
-
     }
 
     public function onSearch($param = null)

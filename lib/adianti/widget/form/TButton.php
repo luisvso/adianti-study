@@ -1,4 +1,5 @@
 <?php
+
 namespace Adianti\Widget\Form;
 
 use Adianti\Widget\Form\AdiantiWidgetInterface;
@@ -31,27 +32,47 @@ class TButton extends TField implements AdiantiWidgetInterface
     protected $properties;
     protected $label;
     protected $formName;
-    
+
     /**
      * Create a button with icon and action
      */
     public static function create($name, $callback, $label, $image)
     {
-        $button = new TButton( $name );
-        $button->setAction(new TAction( $callback ), $label);
-        $button->setImage( $image );
+        $button = new TButton($name);
+        $button->setAction(new TAction($callback), $label);
+        $button->setImage($image);
         return $button;
     }
-    
+
     /**
      * Add CSS class
      */
     public function addStyleClass($class)
     {
-        $classes = ['btn-primary', 'btn-secondary', 'btn-success', 'btn-danger', 'btn-warning', 'btn-info', 'btn-light', 'btn-dark', 'btn-link', 'btn-default',
-                    'btn-outline-primary', 'btn-outline-secondary', 'btn-outline-success', 'btn-outline-danger', 'btn-outline-warning', 'btn-outline-info', 'btn-outline-light', 'btn-outline-dark', 'btn-navlink', 'btn-navlink-active'];
+        $classes = [
+            'btn-primary',
+            'btn-secondary',
+            'btn-success',
+            'btn-danger',
+            'btn-warning',
+            'btn-info',
+            'btn-light',
+            'btn-dark',
+            'btn-link',
+            'btn-default',
+            'btn-outline-primary',
+            'btn-outline-secondary',
+            'btn-outline-success',
+            'btn-outline-danger',
+            'btn-outline-warning',
+            'btn-outline-info',
+            'btn-outline-light',
+            'btn-outline-dark',
+            'btn-navlink',
+            'btn-navlink-active'
+        ];
         $found   = false;
-        
+
         foreach ($classes as $btnClass)
         {
             if (strpos($class, $btnClass) !== false)
@@ -59,10 +80,10 @@ class TButton extends TField implements AdiantiWidgetInterface
                 $found = true;
             }
         }
-        
-        $this->{'class'} = 'btn '. ($found  ? '' : 'btn-default '). $class;
+
+        $this->{'class'} = 'btn ' . ($found  ? '' : 'btn-default ') . $class;
     }
-    
+
     /**
      * Define the action of the button
      * @param  $action TAction object
@@ -71,13 +92,13 @@ class TButton extends TField implements AdiantiWidgetInterface
     public function setAction(TAction $action, $label = NULL)
     {
         $this->action = $action;
-        
+
         if (isset($label))
         {
             $this->label = $label;
         }
     }
-    
+
     /**
      * Returns the buttona action
      */
@@ -85,7 +106,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         return $this->action;
     }
-    
+
     /**
      * Define the tag name
      * @param  $name  tag name
@@ -94,7 +115,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         $this->tagName = $name;
     }
-    
+
     /**
      * Define the icon of the button
      * @param  $image  image path
@@ -103,7 +124,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         $this->image = $image;
     }
-    
+
     /**
      * Define the label of the button
      * @param  $label button label
@@ -112,7 +133,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         $this->label = $label;
     }
-    
+
     /**
      * Returns the button label
      */
@@ -120,7 +141,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         return $this->label;
     }
-    
+
     /**
      * Add a JavaScript function to be executed by the button
      * @param $function A piece of JavaScript code
@@ -130,10 +151,10 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         if ($function)
         {
-            $this->functions = $function.';';
+            $this->functions = $function . ';';
         }
     }
-    
+
     /**
      * Define a field property
      * @param $name  Property Name
@@ -143,7 +164,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         $this->properties[$name] = $value;
     }
-    
+
     /**
      * Return field property
      */
@@ -151,7 +172,7 @@ class TButton extends TField implements AdiantiWidgetInterface
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : null;
     }
-    
+
     /**
      * Enable the field
      * @param $form_name Form name
@@ -159,9 +180,9 @@ class TButton extends TField implements AdiantiWidgetInterface
      */
     public static function enableField($form_name, $field)
     {
-        TScript::create( " tbutton_enable_field('{$form_name}', '{$field}'); " );
+        TScript::create(" tbutton_enable_field('{$form_name}', '{$field}'); ");
     }
-    
+
     /**
      * Disable the field
      * @param $form_name Form name
@@ -169,9 +190,9 @@ class TButton extends TField implements AdiantiWidgetInterface
      */
     public static function disableField($form_name, $field)
     {
-        TScript::create( " tbutton_disable_field('{$form_name}', '{$field}'); " );
+        TScript::create(" tbutton_disable_field('{$form_name}', '{$field}'); ");
     }
-    
+
     /**
      * Show the widget at the screen
      */
@@ -182,12 +203,12 @@ class TButton extends TField implements AdiantiWidgetInterface
             if (empty($this->formName))
             {
                 $label = ($this->label instanceof TLabel) ? $this->label->getValue() : $this->label;
-                throw new Exception(AdiantiCoreTranslator::translate('You must pass the ^1 (^2) as a parameter to ^3', __CLASS__, $label, 'TForm::setFields()') );
+                throw new Exception(AdiantiCoreTranslator::translate('You must pass the ^1 (^2) as a parameter to ^3', __CLASS__, $label, 'TForm::setFields()'));
             }
-            
+
             // get the action as URL
             $original_url = $url = $this->action->serialize(FALSE, TRUE);
-            
+
             if ($this->action->isStatic())
             {
                 $url .= '&static=1';
@@ -196,17 +217,17 @@ class TButton extends TField implements AdiantiWidgetInterface
             $wait_message = AdiantiCoreTranslator::translate('Loading');
             // define the button's action (ajax post)
             $action = "Adianti.waitMessage = '$wait_message';";
-            $action.= "{$this->functions}";
-            $action.= "__adianti_post_data('{$this->formName}', '{$url}');";
-            $action.= "return false;";
-                        
-            $button = new TElement( !empty($this->tagName)? $this->tagName : 'button' );
-            $button->{'id'}      = 'tbutton_'.$this->name;
+            $action .= "{$this->functions}";
+            $action .= "__adianti_post_data('{$this->formName}', '{$url}');";
+            $action .= "return false;";
+
+            $button = new TElement(!empty($this->tagName) ? $this->tagName : 'button');
+            $button->{'id'}      = 'tbutton_' . $this->name;
             $button->{'name'}    = $this->name;
             $button->{'class'}   = 'btn btn-default btn-sm';
             $button->{'onclick'} = $action;
             $action = '';
-            
+
             if ($original_url == '#disabled')
             {
                 $button->{'disabled'} = '1';
@@ -216,13 +237,13 @@ class TButton extends TField implements AdiantiWidgetInterface
         {
             $action = $this->functions;
             // creates the button using a div
-            $button = new TElement( !empty($this->tagName)? $this->tagName : 'div' );
-            $button->{'id'}      = 'tbutton_'.$this->name;
+            $button = new TElement(!empty($this->tagName) ? $this->tagName : 'div');
+            $button->{'id'}      = 'tbutton_' . $this->name;
             $button->{'name'}    = $this->name;
             $button->{'class'}   = 'btn btn-default btn-sm';
             $button->{'onclick'} = $action;
         }
-        
+
         if ($this->properties)
         {
             foreach ($this->properties as $property => $value)
@@ -241,13 +262,13 @@ class TButton extends TField implements AdiantiWidgetInterface
             }
             $span->add($image);
         }
-        
+
         if ($this->label)
         {
             $span->add($this->label);
             $button->{'aria-label'} = $this->label;
         }
-        
+
         $button->add($span);
         $button->show();
     }

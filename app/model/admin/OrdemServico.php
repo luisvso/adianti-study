@@ -19,6 +19,5 @@ class OrdemServico extends TRecord
         parent::addAttribute("ds_defeito");
         parent::addAttribute("tp_situacao");
         parent::addAttribute("vl_custototal");
-
     }
 }

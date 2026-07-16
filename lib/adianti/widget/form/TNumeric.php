@@ -1,4 +1,5 @@
 <?php
+
 namespace Adianti\Widget\Form;
 
 use Adianti\Widget\Form\AdiantiWidgetInterface;
@@ -22,7 +23,7 @@ class TNumeric extends TEntry implements AdiantiWidgetInterface
         parent::setNumericMask($decimals, $decimalsSeparator, $thousandSeparator, $replaceOnPost, $reverse, $allowNegative);
     }
 
-     /**
+    /**
      * Define input allow negative
      */
     public function setAllowNegative($allowNegative)

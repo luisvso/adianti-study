@@ -17,7 +17,5 @@ class MaoObraAplicada extends TRecord
         parent::addAttribute("id_ordemservico");
         parent::addAttribute("qt_utilizada");
         parent::addAttribute("vl_totalitem");
-
     }
-
 }
