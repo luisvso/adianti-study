@@ -15,7 +15,9 @@ use Adianti\Widget\Form\TForm;
 use Adianti\Widget\Form\THidden;
 use Adianti\Widget\Form\TLabel;
 use Adianti\Widget\Form\TNumeric;
+use Adianti\Widget\Form\TSeekButton;
 use Adianti\Widget\Form\TText;
+use Adianti\Widget\Wrapper\TDBSeekButton;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
@@ -64,15 +66,23 @@ class OrdemServicoForm extends TPage
         $vl_custototal->setSize("50%");
 
         // CAMPOS DOS DETALHES
+        $id_peca = new TSeekButton("id_peca");
+        $id_peca->setAction(new TAction(["PecaSeek", "onReload"]));
+
         $row_id = new THidden("id");
         $uniqid = new THidden("peca_uniqid");
+        // $id_peca = new TDBSeekButton("id_peca", "desenvolvimento", $this->form->getName(), "Peca", "cd_peca", "nm_peca", "vl_unitario");
+
         $nm_peca = new TEntry("nm_peca");
+        $nm_peca->setEditable(FALSE);
+
         $vl_unitario = new TNumeric("vl_unitario", 2, ",", ".", true, false, false);
+        $vl_unitario->setEditable(FALSE);
+
         $qt_utilizada = new TNumeric("qt_utilizada", 0, "", ".", true, false, false);
 
         $vl_totalitem = new TNumeric("vl_totalitem", 2, ",", ".", true, false, false);
         $vl_totalitem->setEditable(FALSE);
-
 
         // ADICIONANDO OS CAMPO DO MESTRE
         $row1 = $this->form->addFields(
@@ -116,12 +126,16 @@ class OrdemServicoForm extends TPage
         );
 
         $this->form->addFields(
-            [new TLabel("Nome Peça: (*)", "#ff0000", "14px", null, "100%"), $nm_peca],
-            [new TLabel("Valor Unitario: (*)", "#ff0000", "14px", null, "100%"), $vl_unitario]
+            [new TLabel("Buscar: ", "14px", null, "100%"), $id_peca],
+            [new TLabel("Nome Peça: (*)", "#ff0000",  "14px", null, "100%"), $nm_peca]
         );
 
         $this->form->addFields(
-            [new TLabel("Quantidade Utilizada: (*)", "#ff0000", "14px", null, "100%"), $qt_utilizada],
+            [new TLabel("Valor Unitario: (*)", "#ff0000", "14px", null, "100%"), $vl_unitario],
+            [new TLabel("Quantidade Utilizada: (*)", "#ff0000", "14px", null, "100%"), $qt_utilizada]
+        );
+
+        $this->form->addFields(
             [new TLabel("Valor Total: (*)", "#ff0000", "14px", null, "100%"), $vl_totalitem]
         );
 
@@ -137,6 +151,8 @@ class OrdemServicoForm extends TPage
         $this->peca_lista->setId("pecas_lista");
         $this->peca_lista->generateHiddenFields();
         $this->peca_lista->style = "min-width: 700px; width:100%;margin-bottom: 10px";
+        $this->peca_lista->setMutationAction(new TAction([$this, 'onMutationAction']));
+
 
         //COLUNAS DA LISTAGEM
         // $col_id = new TDataGridColumn("id", "id", "center", 10);
@@ -159,6 +175,8 @@ class OrdemServicoForm extends TPage
 
         $actionDeleteDetail = new TDataGridAction([$this, "onDeletePeca"]);
         $actionDeleteDetail->setFields(["uniqid", "*"]);
+        $actionDeleteDetail->setParameter("vl_custototal", "{vl_custototal}");
+
 
         // ACTION ADDED INSIDE THE DATAGRID
         $this->peca_lista->addAction($actionEditDetail, "Editar", "far:edit blue");
@@ -249,6 +267,7 @@ class OrdemServicoForm extends TPage
             $grid_peca = [
                 "uniqid" => $uniqid,
                 "id" => $data->id,
+                "id_peca" => $data->id_peca,
                 "nm_peca" => $data->nm_peca,
                 "vl_unitario" => $data->vl_unitario,
                 "qt_utilizada" => $data->qt_utilizada,
@@ -262,6 +281,7 @@ class OrdemServicoForm extends TPage
 
             $data->peca_uniqid = "";
             $data->id = "";
+            $data->id_peca = "";
             $data->nm_peca = "";
             $data->vl_unitario = "";
             $data->qt_utilizada = "";
@@ -269,7 +289,8 @@ class OrdemServicoForm extends TPage
 
             TForm::sendData("form_os", $data, false, false);
 
-            $this->calcularVlCustoTotal($grid_peca, strtolower($param["method"]));
+
+            // $this->calcularVlCustoTotal($grid_peca, strtolower($param["method"]));
         }
         catch (Exception $ex)
         {
@@ -291,6 +312,7 @@ class OrdemServicoForm extends TPage
         $data = new stdClass;
         $data->peca_uniqid = $param["uniqid"];
         $data->id = $param["id"];
+        $data->id_peca = $param["id_peca"];
         $data->nm_peca = $param["nm_peca"];
         $data->vl_unitario = $format_value($param["vl_unitario"]);
         $data->qt_utilizada = $param["qt_utilizada"];
@@ -305,6 +327,7 @@ class OrdemServicoForm extends TPage
         $data = new stdClass;
         $data->uniqid = "";
         $data->id = "";
+        $data->id_peca = "";
         $data->nm_peca = "";
         $data->vl_unitario = "";
         $data->qt_utilizada = "";
@@ -314,16 +337,46 @@ class OrdemServicoForm extends TPage
 
         TDataGrid::removeRowById("pecas_lista", $param["uniqid"]);
 
-
-        // self::calcularVlCustoTotal([], $param["method"]);
-
-        // calcularVlCustoTotal( (array) $formOs, $param["method"]);
+        $vl_custototal = $param["vl_custototal"];
+        $vl_totalitem = $param["vl_totalitem"];
     }
 
-    public function calcularVlCustoTotal(array $data, string $method)
-    {
-        $vlTotalItemSomar = $data["vl_totalitem"];
+    // public function calcularVlCustoTotal(array $data, string $method)
+    // {
+    //     $vlTotalItemSomar = $data["vl_totalitem"];
 
+    //     $format_value = function ($value)
+    //     {
+    //         if (is_numeric($value))
+    //         {
+    //             return number_format($value, 2, ",", ".");
+    //         }
+    //     };
+
+    //     $formOs = $this->form->getData();
+
+    //     $custoTotal = (int) $formOs->vl_custototal;
+
+    //     if (preg_match("/^(\w+)*delete(\w+)*$/", $method))
+    //     {
+    //         $custoTotal -= $vlTotalItemSomar;
+    //     }
+
+    //     if (preg_match("/^(\w+)*(add)(\w+)*$/", $method))
+    //     {
+    //         $custoTotal += $vlTotalItemSomar;
+    //     }
+
+    //     if (preg_match("/^(\w+)*(edit)(\w+)*$/", $method))
+    //     {
+    //         // $custoTotal += $vlTotalItemSomar;
+    //     }
+
+    //     Tform::sendData("form_os", ["vl_custototal" => $format_value($custoTotal)], FALSE, FALSE);
+    // }
+
+    public static function onMutationAction($params = [])
+    {
         $format_value = function ($value)
         {
             if (is_numeric($value))
@@ -332,25 +385,19 @@ class OrdemServicoForm extends TPage
             }
         };
 
-        $formOs = $this->form->getData();
-
-        $custoTotal = (int) $formOs->vl_custototal;
-
-        if (preg_match("/^(\w+)*delete(\w+)*$/", $method))
+        $somaCustoTotal = 0;
+        if (!empty($params['list_data']) && $params['list_data'])
         {
-            $custoTotal -= $vlTotalItemSomar;
+            foreach ($params['list_data'] as $row)
+            {
+                $somaCustoTotal += $row['vl_totalitem'];
+            }
         }
 
-        if (preg_match("/^(\w+)*(add)(\w+)*$/", $method))
-        {
-            $custoTotal += $vlTotalItemSomar;
-        }
+        $data = [
+            'vl_custototal' => $format_value($somaCustoTotal)
+        ];
 
-        if (preg_match("/^(\w+)*(edit)(\w+)*$/", $method))
-        {
-            // $custoTotal += $vlTotalItemSomar;
-        }
-
-        Tform::sendData($this->formName, ["vl_custototal" => $format_value($custoTotal)], FALSE, FALSE);
+        TForm::sendData('form_os', $data, false, false);
     }
 }

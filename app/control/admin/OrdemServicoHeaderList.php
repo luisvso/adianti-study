@@ -36,7 +36,6 @@ class OrdemServicoHeaderList extends TPage
         $this->datagrid->setHeight(320);
 
         // INICIO HEADER
-
         $nm_ordemservicoFilter = new TEntry("nm_ordemservico");
 
         $this->form->addFields([new TLabel("Nome Ordem Serviço")], [$nm_ordemservicoFilter]);
