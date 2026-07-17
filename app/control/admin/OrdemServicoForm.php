@@ -17,7 +17,6 @@ use Adianti\Widget\Form\TLabel;
 use Adianti\Widget\Form\TNumeric;
 use Adianti\Widget\Form\TSeekButton;
 use Adianti\Widget\Form\TText;
-use Adianti\Widget\Wrapper\TDBSeekButton;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
@@ -80,6 +79,7 @@ class OrdemServicoForm extends TPage
         $vl_unitario->setEditable(FALSE);
 
         $qt_utilizada = new TNumeric("qt_utilizada", 0, "", ".", true, false, false);
+        $qt_utilizada->setExitAction(new TAction([$this, "onMutationAction"]));
 
         $vl_totalitem = new TNumeric("vl_totalitem", 2, ",", ".", true, false, false);
         $vl_totalitem->setEditable(FALSE);
@@ -289,8 +289,6 @@ class OrdemServicoForm extends TPage
 
             TForm::sendData("form_os", $data, false, false);
 
-
-            // $this->calcularVlCustoTotal($grid_peca, strtolower($param["method"]));
         }
         catch (Exception $ex)
         {
@@ -301,22 +299,16 @@ class OrdemServicoForm extends TPage
     public static function onEditPeca($param)
     {
 
-        $format_value = function ($value)
-        {
-            if (is_numeric($value))
-            {
-                return number_format($value, 2, ",", ".");
-            }
-        };
+        $format_value = new Utils();
 
         $data = new stdClass;
         $data->peca_uniqid = $param["uniqid"];
         $data->id = $param["id"];
         $data->id_peca = $param["id_peca"];
         $data->nm_peca = $param["nm_peca"];
-        $data->vl_unitario = $format_value($param["vl_unitario"]);
+        $data->vl_unitario = $format_value::formatarValor($param["vl_unitario"]);
         $data->qt_utilizada = $param["qt_utilizada"];
-        $data->vl_totalitem = $format_value($param["vl_totalitem"]);
+        $data->vl_totalitem = $format_value::formatarValor($param["vl_totalitem"]);
 
         TForm::sendData("form_os", $data, false, false);
     }
@@ -341,49 +333,10 @@ class OrdemServicoForm extends TPage
         $vl_totalitem = $param["vl_totalitem"];
     }
 
-    // public function calcularVlCustoTotal(array $data, string $method)
-    // {
-    //     $vlTotalItemSomar = $data["vl_totalitem"];
-
-    //     $format_value = function ($value)
-    //     {
-    //         if (is_numeric($value))
-    //         {
-    //             return number_format($value, 2, ",", ".");
-    //         }
-    //     };
-
-    //     $formOs = $this->form->getData();
-
-    //     $custoTotal = (int) $formOs->vl_custototal;
-
-    //     if (preg_match("/^(\w+)*delete(\w+)*$/", $method))
-    //     {
-    //         $custoTotal -= $vlTotalItemSomar;
-    //     }
-
-    //     if (preg_match("/^(\w+)*(add)(\w+)*$/", $method))
-    //     {
-    //         $custoTotal += $vlTotalItemSomar;
-    //     }
-
-    //     if (preg_match("/^(\w+)*(edit)(\w+)*$/", $method))
-    //     {
-    //         // $custoTotal += $vlTotalItemSomar;
-    //     }
-
-    //     Tform::sendData("form_os", ["vl_custototal" => $format_value($custoTotal)], FALSE, FALSE);
-    // }
-
     public static function onMutationAction($params = [])
     {
-        $format_value = function ($value)
-        {
-            if (is_numeric($value))
-            {
-                return number_format($value, 2, ",", ".");
-            }
-        };
+
+        $format_value = new Utils();
 
         $somaCustoTotal = 0;
         if (!empty($params['list_data']) && $params['list_data'])
@@ -395,7 +348,7 @@ class OrdemServicoForm extends TPage
         }
 
         $data = [
-            'vl_custototal' => $format_value($somaCustoTotal)
+            'vl_custototal' => $format_value::formatarValor($somaCustoTotal)
         ];
 
         TForm::sendData('form_os', $data, false, false);
