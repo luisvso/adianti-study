@@ -225,9 +225,7 @@ class OrdemServicoForm extends TPage
     public function gerarNumeroOS()
     {
 
-        $A = 1;
-
-        TForm::sendData($this->formName, ['nu_ordemservico' => $A], FALSE, FALSE);
+        TForm::sendData($this->formName, ['nu_ordemservico' => Utils::gerarIdentificador("OS")], FALSE, FALSE);
     }
 
     public function onSave()

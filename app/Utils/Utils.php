@@ -12,4 +12,11 @@ class Utils
 
     }
 
+    public static function gerarIdentificador(string $prefixo) : string
+    {
+
+        $ano = date("Y");
+        return $prefixo . "-" . $ano . "-" . strtoupper(bin2hex(random_bytes(2)));
+    }
+
 }
