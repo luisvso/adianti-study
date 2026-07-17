@@ -153,6 +153,7 @@ class OrdemServicoForm extends TPage
         $this->peca_lista->addColumn($col_totalitem);
 
         // ACTION FOR DETAILS
+        $param["vl_custototal"] = $vl_custototal;
         $actionEditDetail = new TDataGridAction([$this, "onEditPeca"]);
         $actionEditDetail->setFields(["uniqid", "*"]);
 
